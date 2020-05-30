@@ -1,9 +1,10 @@
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
+const isDevelopmentBuild = true;
+
 module.exports = {
   entry: './src/index.ts',
-  watch: true,
   module: {
     rules: [
       {
@@ -23,11 +24,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['*', '.js', '.jsx', '.tsx', '.ts', '.less', '.css'],
-  },
-  watchOptions: {
-    poll: 1000,
-  },
-  devtool: 'inline-source-map',
+  },  
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html'
@@ -35,6 +32,16 @@ module.exports = {
   ],
   output: {
     path: resolve(__dirname, 'dist'),
-    // filename: 'bundle.js'
+  },
+
+  // development settings
+  watch: isDevelopmentBuild,
+  watchOptions: {
+    poll: 1000
+  },
+  devtool: isDevelopmentBuild ? 'inline-source-map' : undefined,
+  devServer: {
+    port: 3000,
+    host: '0.0.0.0'
   }
 }

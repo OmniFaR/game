@@ -1,10 +1,17 @@
+import { Engine, Bodies, World } from 'matter-js';
+import Player from './Objects/Player';
+import centerElement from './hooks/centerElement';
 
-function main(ctx: CanvasRenderingContext2D) {
-  ctx.fillStyle = 'rgb(255, 0, 0)';
-  ctx.fillRect(20, 20, 200, 200);
-  ctx.fillStyle = 'rgb(0, 255, 0)';
-  ctx.font  = '48px sans-serif';
-  ctx.fillText("Hello world!", 20, 20, 200);
+function main(engine: Engine) {
+  const boxA = Bodies.rectangle(400, 200, 80, 80);
+  const boxB = Bodies.rectangle(450, 50, 80, 80);
+  const ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
+
+  const player = Player(engine);
+
+  World.add(engine.world, [ boxA, boxB, ground, player ]);
+
+  return player;
 }
 
 export default main;

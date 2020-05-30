@@ -1,21 +1,27 @@
 import documentReady from './hooks/documentReady';
 import main from './main';
-
-const aspectRadtio = 4 / 3;
+import Matter, { Runner, Engine } from 'matter-js';
 
 documentReady().then(async () => {
-  console.log("Document is ready!");
-  const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-  const ctx = canvas.getContext('2d');
 
-  const onResize = () => {
-    canvas.style.height = `${canvas.getBoundingClientRect().width / aspectRadtio}px`
-  };
+  const engine = Matter.Engine.create();
 
-  console.log("test hot reload 14!");
+  const render = Matter.Render.create({
+    element: document.body,
+    engine
+  });
 
-  document.addEventListener('resize', onResize);
-  onResize();
+  const runner = Matter.Runner.create({
+    delta: 1000 / 60,
+    isFixed: false,
+    enabled: false
+  });
 
-  main(ctx);
+
+  (Matter.Render as any).lookAt(render, main(engine));
+
+  Matter.Engine.run(engine);
+  Matter.Render.run(render);
+  Matter.Runner.run(runner, engine);
+
 })

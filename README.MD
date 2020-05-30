@@ -1,4 +1,4 @@
 
-# Game
+# Ideen
 
-## Wsl so konfigurieren das localhost funktioniert.
+Jump and run.
