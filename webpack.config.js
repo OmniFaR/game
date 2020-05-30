@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const isDevelopmentBuild = true;
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: './src/bootstrap.ts',
   module: {
     rules: [
       {
