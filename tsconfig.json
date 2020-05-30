@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "dom",
+            "DOM.Iterable",
+            "ESNext",
+            "ES2015"
+        ],
+        "module": "system",
+        "target": "ES5",
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true
+    }
+}
