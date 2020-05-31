@@ -1,7 +1,14 @@
-import './config';
+import { debugMode } from './config';
+import './inversify.config';
+import './matter.config';
+import './pixi.config';
 
 import './Middleware/pixi';
-import './local-tests/createPlayer';
+
+if (process.env.DEBUG_ENABLED) {
+  console.log("DEBUG MODE ENABLED!");
+  require('../local-tests/');
+}
 
 import container from './inversify.config';
 import { Engine, World, Bodies } from 'matter-js';

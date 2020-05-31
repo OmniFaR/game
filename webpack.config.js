@@ -1,5 +1,6 @@
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const DotenvFlow = require('dotenv-flow-webpack');
 
 const isDevelopmentBuild = true;
 
@@ -35,7 +36,8 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html'
-    })
+    }),
+    new DotenvFlow()
   ],
   output: {
     path: resolve(__dirname, 'dist'),
@@ -50,5 +52,8 @@ module.exports = {
   devServer: {
     port: 3000,
     host: '0.0.0.0'
+  },
+  node: {
+    fs: "empty"
   }
 }

@@ -1,5 +1,5 @@
-import container from '../inversify.config';
-import IInput from '../Input/IInput';
+import container from '../../src/inversify.config';
+import IInput from '../../src/Input/IInput';
 
 const sleep = (time: number) => new Promise((resolve) => setTimeout(resolve, time))
 
