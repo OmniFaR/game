@@ -1,0 +1,3 @@
+local-tests/
+.env.local
+*.MD
