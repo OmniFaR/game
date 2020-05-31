@@ -10,6 +10,7 @@
         "target": "ES5",
         "moduleResolution": "node",
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "alwaysStrict": true,
         "forceConsistentCasingInFileNames": true,
         "strictFunctionTypes": true,
