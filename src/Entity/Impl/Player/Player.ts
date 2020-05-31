@@ -1,5 +1,5 @@
 import { Bodies, World, Engine } from "matter-js";
-import MovementController from '../../Hooks/MovementController';
+import MovementController, { defaultOptions as movementControllerDefaultOptions } from '../../Hooks/MovementController';
 import CameraFollowController from '../../Hooks/CameraFollowController';
 import IInput from '../../../Input/IInput';
 import container from "../../../inversify.config";
@@ -13,12 +13,20 @@ type PlayerOptions = {
   density: number;
   friction: number;
   frictionAir: number;
+  useTorque: boolean;
+  
+  // Movement controller options.
+  movementSpeed: number;
+  jumpVelocity: number;
+  maxMovementVelocity: number;
+  rotateInTheAir: boolean;
 }
 
 const defaultPlayerOptions: PlayerOptions = {
   density: 0.001,
   friction: 0.8,
-  frictionAir: 0.01
+  frictionAir: 0.01,
+  ...movementControllerDefaultOptions
 }
 
 async function Player(input: IInput, options: Partial<PlayerOptions> = {}): Promise<[Matter.Body, () => any]> {
@@ -26,7 +34,11 @@ async function Player(input: IInput, options: Partial<PlayerOptions> = {}): Prom
   const {
     density,
     friction,
-    frictionAir
+    frictionAir,
+    useTorque,
+    jumpVelocity,
+    maxMovementVelocity,
+    movementSpeed
   } = { ...defaultPlayerOptions, ...options} as PlayerOptions;
 
   const dougAssets = await loadDougAssets();
@@ -66,6 +78,12 @@ async function Player(input: IInput, options: Partial<PlayerOptions> = {}): Prom
 
   const removePlayerCamera = CameraFollowController(player);
   const removePlayerMovement = MovementController(player, input, {
+
+    useTorque,
+    jumpVelocity,
+    maxMovementVelocity,
+    movementSpeed,
+
     jumpAnimation: dougAssets.jump,
     walkAnimation: dougAssets.walk,
     idleAnimation: dougAssets.idle,
