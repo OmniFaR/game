@@ -13,17 +13,23 @@ type MovementControllerOptions = {
   jumpVelocity: number;
   maxMovementVelocity: number;
   inputThreshold: number;
+  useTorque: boolean;
+
+  rotateInTheAir: boolean;
+
   idleAnimation?: PIXI.AnimatedSprite;
   jumpAnimation?: PIXI.AnimatedSprite;
-  walkAnimation?: PIXI.AnimatedSprite;
+  walkAnimation?: PIXI.AnimatedSprite
   onLand?: (speed: number) => any;
 }
 
-const defaultOptions: MovementControllerOptions = {
-  movementSpeed: 0.2,
+export const defaultOptions: MovementControllerOptions = {
+  movementSpeed: 0.002,
   jumpVelocity: 0.1,
-  maxMovementVelocity: 0.2,
+  maxMovementVelocity: 6,
   inputThreshold: 0.2,
+  useTorque: false,
+  rotateInTheAir: false
 }
 
 function MovementController(entity: Body, input: IInput, options: Partial<MovementControllerOptions> = {}) {
@@ -33,6 +39,10 @@ function MovementController(entity: Body, input: IInput, options: Partial<Moveme
     maxMovementVelocity,
     movementSpeed,
     jumpVelocity,
+    useTorque,
+
+    rotateInTheAir,
+
     walkAnimation,
     jumpAnimation,
     idleAnimation,
@@ -55,8 +65,8 @@ function MovementController(entity: Body, input: IInput, options: Partial<Moveme
   const OnBeforeTick = () => {
     // Visual logic
 
-    if (Math.abs(entity.angularVelocity) > 0.01) {
-      sprite.scale.x = Math.abs(sprite.scale.x) * (entity.angularVelocity < 0 ? -1 : 1);
+    if (Math.abs(entity.velocity.x) > 0.1 && (rotateInTheAir || (entity as any).isOnGround)) {
+      sprite.scale.x = Math.abs(sprite.scale.x) * (entity.velocity.x < 0 ? -1 : 1);
     }
 
     if (Math.abs(entity.angularVelocity) > 0.01 && (entity as any).isOnGround) {
@@ -79,20 +89,35 @@ function MovementController(entity: Body, input: IInput, options: Partial<Moveme
 
     // Controller logic.
 
+    let force = Vector.create(0, 0);
+
     const inputLeft = input.keyValue("left");
-    if (inputLeft > inputThreshold && entity.angularVelocity > -maxMovementVelocity) {
-      entity.torque = -movementSpeed * inputLeft;
+    if (inputLeft > inputThreshold && entity.velocity.x > -maxMovementVelocity) {
+      const value = -movementSpeed * inputLeft;
+      if (useTorque) {
+        entity.torque = value;
+      } else {
+        force.x = value;
+      }
     }
 
     const inputRight = input.keyValue("right");
-    if (inputRight > inputThreshold && entity.angularVelocity < maxMovementVelocity) {
-      entity.torque = movementSpeed * inputRight;
+    if (inputRight > inputThreshold && entity.velocity.x < maxMovementVelocity) {
+      const value = movementSpeed * inputRight;
+      if (useTorque) {
+        entity.torque = value;
+      } else {
+        force.x = value;
+      }
+      // entity.torque = movementSpeed * inputRight;
     }
 
     const inputJump = input.keyValue("jump");
     if ((entity as any).isOnGround && inputJump > inputThreshold) {
-      entity.force = Vector.create(0, -jumpVelocity * inputJump);
+      force.y = -jumpVelocity * inputJump;
     }
+
+    entity.force = force;
   }
 
   Events.on(engine, "beforeTick", OnBeforeTick);
