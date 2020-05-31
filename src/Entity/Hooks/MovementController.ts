@@ -1,4 +1,4 @@
-import { Body, Engine, Events, Vector } from "matter-js";
+import { Body, Engine, Events, Vector, Sleeping } from "matter-js";
 import IInput from '../../Input/IInput';
 import container from '../../inversify.config';
 import IsOnGround from "./IsOnGround";
@@ -12,6 +12,8 @@ function MovementController(entity: Body, input: IInput, movementSpeed: number =
   IsOnGround(entity);
 
   Events.on(engine, "beforeTick", () => {
+    Sleeping.set(entity, false);
+
     const inputLeft = input.keyValue("left");
     if (inputLeft > inputThreshold && entity.angularVelocity > -maxMovementVelocity) {
       entity.torque = -movementSpeed * inputLeft;

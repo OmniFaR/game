@@ -1,6 +1,5 @@
 import { Application } from 'pixi.js';
 import container from './inversify.config';
-import { Engine, Events } from 'matter-js';
 
 const scene = document.getElementById('scene');
 

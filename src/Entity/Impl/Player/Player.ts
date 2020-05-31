@@ -1,9 +1,7 @@
-import { Bodies, Events, World, Engine } from "matter-js";
+import { Bodies, Events, World, Engine, IBodyDefinition } from "matter-js";
 import MovementController from '../../Hooks/MovementController';
 import IInput from '../../../Input/IInput';
 import container from "../../../inversify.config";
-
-const engine = container.get(Engine);
 
 function Player(input: IInput) {
   const player = Bodies.circle(100, 100, 25,{
@@ -11,11 +9,17 @@ function Player(input: IInput) {
     friction: 0.7,
     frictionStatic: 0,
     frictionAir: 0.01,
-    restitution: 0
+    restitution: 0,
+    render: {
+      fillStyle: '#ff00ff'
+    }
   });
+
+  (player as any).dontTransferAngle = true;
 
   MovementController(player, input);
 
+  const engine = container.get(Engine);
   World.add(engine.world, player);
 
   return player;

@@ -9,6 +9,9 @@ const { lazyInject: originalLazyInject } = getDecorators(container);
 
 container.bind(IInput).to(KeyboardInput);
 
+/**
+ * Fix for webpack.
+ */
 function fixPropertyDecorator<T extends Function>(decorator: T): T {
   return ((...args: any[]) => (
     target: any,

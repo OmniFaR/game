@@ -1,9 +1,5 @@
-import container from "../inversify.config";
-import { Engine, World } from "matter-js";
 import Player from "../Entity/Impl/Player/Player";
 import createInput from "./createPlayer_createInput";
-
-const engine = container.get(Engine);
 
 let addingPlayer = false;
 
@@ -26,7 +22,7 @@ element.addEventListener('click', async (event) => {
   const input = await inputFactory();
   element.innerText = originalText;
 
-  Player(input)
+  Player(input);
   
   addingPlayer = false;
 })
