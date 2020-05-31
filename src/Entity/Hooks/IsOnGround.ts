@@ -5,6 +5,11 @@ const engine = container.get(Engine);
 
 function IsOnGround(entity: Body) {
 
+  /**
+   * TODO: This needs some refactoring, we should only set isOnGround = true when the collision is underneath.
+   * TODO: This needs some refactoring, we should also set isOnWall = true when the collision is with a wall.
+   */
+
   (entity as any).isOnGround = false;
 
   let isOnGroundUpdated = false;
@@ -17,31 +22,35 @@ function IsOnGround(entity: Body) {
     (entity as any).isOnGround = isOnGroundUpdated = value;
   }
 
-  Events.on(engine, "beforeTick", () => isOnGroundUpdated = false);
+  const onBeforeTick = () => isOnGroundUpdated = false;
 
-  Events.on(engine, "collisionEnd", (event) => {
+  const onCollisionEnd = (event: Matter.IEventCollision<Engine>) =>  {
     if (event.pairs.find((pair) => pair.bodyA === entity || pair.bodyB === entity) === undefined) {
       return;
     }
 
     updateIsOnGround(false);
-  });
+  }
 
-  Events.on(engine, "collisionStart", (event) => {
+  const onCollisionStartOrActive = (event: Matter.IEventCollision<Engine>) => {
     if (event.pairs.find((pair) => pair.bodyA === entity || pair.bodyB === entity) === undefined) {
       return;
     }
 
     updateIsOnGround(true);
-  });
+  }
 
-  Events.on(engine, "collisionActive", (event) => {
-    if (event.pairs.find((pair) => pair.bodyA === entity || pair.bodyB === entity) === undefined) {
-      return;
-    }
+  Events.on(engine, "beforeTick", onBeforeTick);
+  Events.on(engine, "collisionEnd", onCollisionEnd);
+  Events.on(engine, "collisionStart", onCollisionStartOrActive);
+  Events.on(engine, "collisionActive", onCollisionStartOrActive);
 
-    updateIsOnGround(true);
-  });
+  return () => {
+    Events.off(engine, "beforeTick", onBeforeTick);
+    Events.off(engine, "collisionEnd", onCollisionEnd);
+    Events.off(engine, "collisionActive", onCollisionStartOrActive);
+    Events.off(engine, "collisionActive", onCollisionStartOrActive);
+  }
 }
 
 export default IsOnGround;

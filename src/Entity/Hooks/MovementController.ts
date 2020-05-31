@@ -20,43 +20,42 @@ type MovementControllerOptions = {
 }
 
 const defaultOptions: MovementControllerOptions = {
-  movementSpeed: 0.2, 
-  jumpVelocity: 0.1, 
+  movementSpeed: 0.2,
+  jumpVelocity: 0.1,
   maxMovementVelocity: 0.2,
   inputThreshold: 0.2,
 }
 
-function MovementController(entity: Body, input: IInput, options: Partial<MovementControllerOptions> =  {}) {
+function MovementController(entity: Body, input: IInput, options: Partial<MovementControllerOptions> = {}) {
 
-  const { 
-    inputThreshold, 
-    maxMovementVelocity, 
-    movementSpeed, 
-    jumpVelocity, 
-    walkAnimation, 
+  const {
+    inputThreshold,
+    maxMovementVelocity,
+    movementSpeed,
+    jumpVelocity,
+    walkAnimation,
     jumpAnimation,
     idleAnimation,
     onLand
   } = { ...defaultOptions, ...options } as MovementControllerOptions;
 
-  IsOnGround(entity);
-  
+  const removeIsOnGround = IsOnGround(entity);
+
   const sprite = GetSprite(entity) as AnimatedSprite;
 
   const [setActiveAnimation] = Animated(sprite, {
     'idle': idleAnimation,
     'walk': walkAnimation,
     'jump': jumpAnimation
-  })
-
+  });
 
   let wasOnGround = true;
   let previousYVelocity = 0;
-  Events.on(engine, "beforeTick", () => {
 
+  const OnBeforeTick = () => {
     // Visual logic
 
-    if (Math.abs(entity.angularVelocity) > 0.01 ) {
+    if (Math.abs(entity.angularVelocity) > 0.01) {
       sprite.scale.x = Math.abs(sprite.scale.x) * (entity.angularVelocity < 0 ? -1 : 1);
     }
 
@@ -94,7 +93,14 @@ function MovementController(entity: Body, input: IInput, options: Partial<Moveme
     if ((entity as any).isOnGround && inputJump > inputThreshold) {
       entity.force = Vector.create(0, -jumpVelocity * inputJump);
     }
-  });
+  }
+
+  Events.on(engine, "beforeTick", OnBeforeTick);
+
+  return () => {
+    Events.off(engine, "beforeTick", OnBeforeTick)
+    removeIsOnGround();
+  };
 }
 
 export default MovementController;

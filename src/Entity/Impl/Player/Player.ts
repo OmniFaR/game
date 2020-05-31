@@ -1,4 +1,4 @@
-import { Bodies, Events, World, Engine } from "matter-js";
+import { Bodies, World, Engine } from "matter-js";
 import MovementController from '../../Hooks/MovementController';
 import CameraFollowController from '../../Hooks/CameraFollowController';
 import IInput from '../../../Input/IInput';
@@ -7,7 +7,27 @@ import { loadDougAssets } from "../../../Assets";
 import { AnimatedSprite } from "pixi.js";
 import GetSprite from "../../../Middleware/pixi/Hooks/GetSprite";
 
-async function Player(input: IInput) {
+const engine = container.get(Engine);
+
+type PlayerOptions = {
+  density: number;
+  friction: number;
+  frictionAir: number;
+}
+
+const defaultPlayerOptions: PlayerOptions = {
+  density: 0.001,
+  friction: 0.8,
+  frictionAir: 0.01
+}
+
+async function Player(input: IInput, options: Partial<PlayerOptions> = {}): Promise<[Matter.Body, () => any]> {
+
+  const {
+    density,
+    friction,
+    frictionAir
+  } = { ...defaultPlayerOptions, ...options} as PlayerOptions;
 
   const dougAssets = await loadDougAssets();
   dougAssets.idle.animationSpeed = 0.1;
@@ -19,10 +39,10 @@ async function Player(input: IInput) {
   sprite.play();
 
   const player = Bodies.circle(100, 100, 25,{
-    density: 0.001,
-    friction: 0.7,
+    density,
+    friction,
     frictionStatic: 0,
-    frictionAir: 0.01,
+    frictionAir,
     restitution: 0,
     render: {
       texture: sprite,
@@ -44,9 +64,8 @@ async function Player(input: IInput) {
 
   (player as any).dontTransferAngle = true;
 
-  CameraFollowController(player);
-
-  MovementController(player, input, {
+  const removePlayerCamera = CameraFollowController(player);
+  const removePlayerMovement = MovementController(player, input, {
     jumpAnimation: dougAssets.jump,
     walkAnimation: dougAssets.walk,
     idleAnimation: dougAssets.idle,
@@ -60,10 +79,20 @@ async function Player(input: IInput) {
     }
   });
 
-  const engine = container.get(Engine);
   World.add(engine.world, player);
 
-  return player;
+  return [player, () => {
+    removePlayerCamera();
+    removePlayerMovement();
+
+    emitter.destroy();
+    dougAssets.damage.destroy();
+    dougAssets.idle.destroy();
+    dougAssets.jump.destroy();
+    dougAssets.walk.destroy();
+
+    World.remove(engine.world, player);
+  }];
 }
 
 export default Player;

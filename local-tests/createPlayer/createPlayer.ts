@@ -3,14 +3,15 @@ import createInput from "./createPlayer_createInput";
 import documentReady from "../Util/documentReady";
 import createButton from "../Util/createButton";
 
-let addingPlayer = false;
-
-console.log("ok!");
 
 documentReady(() => {
-  const element = createButton("Create player");
+  
+  const createPlayerButton = createButton("Create player");
 
-  element.addEventListener('click', async (event) => {
+  
+  let addingPlayer = false;
+
+  createPlayerButton.addEventListener('click', async (event) => {
     event.preventDefault();
     event.stopImmediatePropagation();
   
@@ -21,14 +22,25 @@ documentReady(() => {
   
     addingPlayer = true;
   
-    let originalText = element.innerText;
-    element.innerText = "Waiting for the user to press any key on the desired device.";
+    let originalText = createPlayerButton.innerText;
+    createPlayerButton.innerText = "Waiting for the user to press any key on the desired device.";
     const inputFactory = await createInput();
-    element.innerText = "Waiting for inputs to select keys to controll caracter.";
+    createPlayerButton.innerText = "Waiting for inputs to select keys to controll caracter.";
     const input = await inputFactory();
-    element.innerText = originalText;
+    createPlayerButton.innerText = originalText;
   
-    Player(input);
+    const [player, deletePlayer] = await Player(input);
+
+    const button = createButton(`Delete player (${player.id})`);
+    const onClick = () => {
+      event.preventDefault(),
+      event.stopImmediatePropagation();
+      document.removeEventListener('click', onClick);
+      button.parentElement.removeChild(button);
+
+      deletePlayer();
+    }
+    button.addEventListener('click', onClick);
     
     addingPlayer = false;
   })

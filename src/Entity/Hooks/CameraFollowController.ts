@@ -16,13 +16,11 @@ const defaultCameraOptions = {
 
 
 function CameraFollowController(entity: Body, options: Partial<CameraOptionsType> = {}) {
-
-
   const {
     initialScale,
     scaleFactor,
     movementFactor
-  }  = { ...options, ...defaultCameraOptions } as CameraOptionsType
+  }  = { ...defaultCameraOptions, ...options } as CameraOptionsType
 
   const app = container.get(Application);
   const engine = container.get(Engine);
@@ -33,17 +31,23 @@ function CameraFollowController(entity: Body, options: Partial<CameraOptionsType
   app.stage.scale.x = initialScale;
   app.stage.scale.y = initialScale;
 
-  Events.on(engine, "beforeUpdate", () => {
+  const onBeforeUpdate = () => {
     app.stage.pivot.x = entity.position.x + (entity.velocity.x * movementFactor);
     app.stage.pivot.y = entity.position.y + (entity.velocity.y * movementFactor);
 
     const extraScale = ((entity.velocity.x * scaleFactor) + (entity.velocity.y * scaleFactor)) / 2;
     const absuluteExtraScale = Math.abs(extraScale);
 
-    // TODO: Make the camera transition the scale over time 
+    // TODO: Add camera shake when the player lands with force.
+    // TODO: Make the camera transition the scale over time.
+    
     app.stage.scale.x = initialScale + absuluteExtraScale;
     app.stage.scale.y = initialScale + absuluteExtraScale;
-  });
+  }
+
+  Events.on(engine, "beforeUpdate", onBeforeUpdate);
+
+  return () => Events.off(engine, "beforeUpdate", onBeforeUpdate);
 }
 
 export default CameraFollowController;
