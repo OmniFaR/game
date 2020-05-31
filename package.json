@@ -9,6 +9,8 @@
   },
   "author": "OmniFaR",
   "dependencies": {
+    "copy-webpack-plugin": "^6.0.1",
+    "pixi-particles": "^4.2.1",
     "serve": "11.3.0"
   },
   "devDependencies": {

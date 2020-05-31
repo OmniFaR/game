@@ -2,7 +2,7 @@ import { Engine, Render, Runner } from "matter-js";
 import container from "./inversify.config";
 import Matter from "matter-js";
 
-const engine = Engine.create({ enableSleeping: true });
+const engine = Engine.create({  });
 container.bind(Engine).toConstantValue(engine);
 Engine.run(engine);
 

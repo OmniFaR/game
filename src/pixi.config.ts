@@ -1,4 +1,5 @@
 import { Application } from 'pixi.js';
+import Particles from 'pixi-particles';
 import container from './inversify.config';
 
 const scene = document.getElementById('scene');

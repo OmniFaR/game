@@ -1,6 +1,7 @@
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const DotenvFlow = require('dotenv-flow-webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const isDevelopmentBuild = true;
 
@@ -22,7 +23,7 @@ module.exports = {
         loader: 'css-loader'
       },
       {
-        test: /\.(png|jpe?g|gif)$/i,
+        test: /\.(png|jpe?g|gif|json)$/i,
         loader: 'file-loader',
         options: {
           name: '[path][name].[ext]',
@@ -37,7 +38,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html'
     }),
-    new DotenvFlow()
+    new DotenvFlow(),
+    new CopyWebpackPlugin({ patterns: [
+      { from: 'src/Assets/_ressources', to: 'assets/_ressources/' }
+    ]})
   ],
   output: {
     path: resolve(__dirname, 'dist'),

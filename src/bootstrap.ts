@@ -5,6 +5,8 @@ import './pixi.config';
 
 import './Middleware/pixi';
 
+import './Assets';
+
 if (process.env.DEBUG_ENABLED) {
   console.log("DEBUG MODE ENABLED!");
   require('../local-tests/');
