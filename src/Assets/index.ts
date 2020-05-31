@@ -23,7 +23,15 @@ function loadSpriteFile(name: string, file: string): Promise<Partial<Record<stri
   });  
 }
 
-export async function loadDougAssets() {
+type DougAssets = {
+  idle: PIXI.AnimatedSprite;
+  damage: PIXI.AnimatedSprite;
+  jump: PIXI.AnimatedSprite;
+  walk: PIXI.AnimatedSprite;
+  player_land_on_ground_particle_factory: (container: PIXI.Container) => Particles.Emitter;
+}
+
+const loadDougAssetsPromise = new Promise<DougAssets>(async (resolve) => {
   const { player_doug_base } = await loadSpriteFile('player_doug_base', 'assets/_ressources/Player/Doug/sprite.json');
   const { player_land_on_ground_particle_json  } = await loadSpriteFile('player_land_on_ground_particle_json', 'assets/_ressources/Player/landOnGround.json');
 
@@ -37,5 +45,9 @@ export async function loadDougAssets() {
     player_land_on_ground_particle_json.data
   );
 
-  return { idle, damage, jump, walk, player_land_on_ground_particle_factory };
+  resolve({ idle, damage, jump, walk, player_land_on_ground_particle_factory });
+});
+
+export async function loadDougAssets() {
+  return await loadDougAssetsPromise;
 }
