@@ -1,11 +1,11 @@
 import { Bodies, World, Engine } from "matter-js";
 import MovementController, { defaultOptions as movementControllerDefaultOptions } from '../../Hooks/MovementController';
-import CameraFollowController from '../../Hooks/CameraFollowController';
 import IInput from '../../../Input/IInput';
 import container from "../../../inversify.config";
 import { loadDougAssets } from "../../../Assets";
 import { AnimatedSprite } from "pixi.js";
 import GetSprite from "../../../Middleware/pixi/Hooks/GetSprite";
+import FollowEntityCamera from '../../../Camera/Impl/FollowEntityCamera';
 
 const engine = container.get(Engine);
 
@@ -23,10 +23,11 @@ type PlayerOptions = {
 }
 
 const defaultPlayerOptions: PlayerOptions = {
+  ...movementControllerDefaultOptions,
   density: 0.001,
   friction: 0.8,
   frictionAir: 0.01,
-  ...movementControllerDefaultOptions
+  rotateInTheAir: true
 }
 
 async function Player(input: IInput, options: Partial<PlayerOptions> = {}): Promise<[Matter.Body, () => any]> {
@@ -38,7 +39,8 @@ async function Player(input: IInput, options: Partial<PlayerOptions> = {}): Prom
     useTorque,
     jumpVelocity,
     maxMovementVelocity,
-    movementSpeed
+    movementSpeed,
+    rotateInTheAir
   } = { ...defaultPlayerOptions, ...options} as PlayerOptions;
 
   const dougAssets = await loadDougAssets();
@@ -76,13 +78,15 @@ async function Player(input: IInput, options: Partial<PlayerOptions> = {}): Prom
 
   (player as any).dontTransferAngle = true;
 
-  const removePlayerCamera = CameraFollowController(player);
+
+  container.get(FollowEntityCamera).addBody(player);
   const removePlayerMovement = MovementController(player, input, {
 
     useTorque,
     jumpVelocity,
     maxMovementVelocity,
     movementSpeed,
+    rotateInTheAir,
 
     jumpAnimation: dougAssets.jump,
     walkAnimation: dougAssets.walk,
@@ -100,7 +104,7 @@ async function Player(input: IInput, options: Partial<PlayerOptions> = {}): Prom
   World.add(engine.world, player);
 
   return [player, () => {
-    removePlayerCamera();
+    container.get(FollowEntityCamera).removeBody(player);
     removePlayerMovement();
 
     emitter.destroy();
