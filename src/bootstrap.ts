@@ -9,7 +9,7 @@ import './Assets';
 
 import FollowEntityCamera from "./Camera/Impl/FollowEntityCamera";
 
-if (process.env.DEBUG_ENABLED) {
+if (debugMode) {
   console.log("DEBUG MODE ENABLED!");
   require('../local-tests/');
 }

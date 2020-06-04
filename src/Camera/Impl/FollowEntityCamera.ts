@@ -48,28 +48,27 @@ class FollowEntityCamera extends ICamera {
 
     this.bounds = this.calculateBounds(bodies);
 
-    const size = Vector.sub(this.bounds.max, this.bounds.min);
-    const resultingSize = this.updateCameraPosition(app, this.updateCameraSize(app, size));
+    const elementSize = Vector.sub(this.bounds.max, this.bounds.min);
+    const cameraSize = this.getCameraSize(app, elementSize);
+    const cameraPosition = this.getCameraPosition(app, cameraSize);
 
-    this.bounds.max = Vector.add(this.bounds.min, resultingSize);
+    this.bounds.max = Vector.add(this.bounds.min, cameraSize);
+
+    this.updateCameraPositionAndSize(cameraPosition, cameraSize);
   }
 
   private calculateBounds(bodies: Body[]): Bounds {
     return Bounds.create(bodies.reduce((allVertices, { vertices }) => [ ...allVertices, ...vertices ], []));
   }
 
-  private updateCameraPosition(app: Application, size: Vector) {
+  private getCameraPosition(app: Application, size: Vector) {
     const { min } = this.bounds;
     const position = Vector.add(min, Vector.div(size, 2));
 
-    app.stage.position.x = app.renderer.width/2;
-    app.stage.position.y = app.renderer.height/2;
-    app.stage.pivot.copyFrom(position as any);
-
-    return size;
+    return position;
   }
 
-  private updateCameraSize(app: Application, size: Vector): Vector {
+  private getCameraSize(app: Application, size: Vector): Vector {
     const newSize = Vector.add(size, Vector.create(this.options.distanceOffset, this.options.distanceOffset));
 
     const { x, y } = newSize;
@@ -77,10 +76,9 @@ class FollowEntityCamera extends ICamera {
 
     const estimatedScale = Math.min( width / x, height / y);
 
-    app.stage.scale.x = app.stage.scale.y = Math.min(estimatedScale, this.options.minimalScale);
+    const cameraSize = Math.min(estimatedScale, this.options.minimalScale);
 
-
-    return size;
+    return Vector.create(cameraSize, cameraSize);
   }
 
   getBounds(): Bounds {

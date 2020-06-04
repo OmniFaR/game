@@ -1,9 +1,18 @@
 import { injectable } from "inversify";
 import container from '../inversify.config';
-import { Events, Engine, Bounds } from "matter-js";
+import { Events, Engine, Bounds, Vector, Render } from "matter-js";
 import { Application } from "pixi.js";
+import { debugRendererMode } from "../config";
 
 let activeCameras: Array<ICamera> = [];
+
+const engine = container.get(Engine);
+const app = container.get(Application);
+
+
+function multVectors(a: Vector, b: Vector) {
+  return Vector.create(a.x * b.x, a.y * b.y);
+}
 
 @injectable()
 abstract class ICamera {
@@ -36,13 +45,31 @@ abstract class ICamera {
     return this.index === activeCameras.length;
   }
 
+  protected updateCameraPositionAndSize(position: Vector, size: Vector) {
+    if (debugRendererMode) {
+      const render = container.get(Render);
+
+      const finalSize = multVectors(Vector.create(render.options.width, render.options.height), size);
+
+      const centerPosition = Vector.sub(position, Vector.div(finalSize, 2));
+      render.bounds.min = centerPosition;
+      render.bounds.max = Vector.add(position, finalSize);
+    }
+
+    app.stage.position.x = app.renderer.width/2;
+    app.stage.position.y = app.renderer.height/2;
+
+    app.stage.scale.copyFrom(size as any);
+    app.stage.pivot.copyFrom(position as any);
+  }
+
   /**
    * @internal
    * @param engine The engine
    */
   public abstract onUpdate(engine: Engine, app: Application);
 
-  public abstract getBounds(): Bounds; 
+  public abstract getBounds(): Bounds;
 }
 
 container.bind(ICamera).toDynamicValue(() => {
@@ -51,8 +78,6 @@ container.bind(ICamera).toDynamicValue(() => {
   }
 });
 
-const engine = container.get(Engine);
-const app = container.get(Application);
 Events.on(engine, 'afterUpdate', (event) => {
   const camera = container.get(ICamera);
 
