@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import * as Particles from 'pixi-particles';
-import container from "../inversify.config";
+import container from "../Engine/inversify.config";
 import { Vector } from "matter-js";
 
 const app = container.get(PIXI.Application);

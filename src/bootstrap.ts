@@ -1,20 +1,16 @@
-import { debugMode } from './config';
-import './inversify.config';
-import './matter.config';
-import './pixi.config';
+import { debugMode } from './Engine/config';
 
-import './Middleware/pixi';
-
+import './Engine';
 import './Assets';
 
-import FollowEntityCamera from "./Camera/Impl/FollowEntityCamera";
+import FollowEntityCamera from "./Engine/Camera/Impl/FollowEntityCamera";
 
 if (debugMode) {
   console.log("DEBUG MODE ENABLED!");
   require('../local-tests/');
 }
 
-import container from './inversify.config';
+import container from './Engine/inversify.config';
 import { Engine, World, Bodies } from 'matter-js';
 
 const camera = new FollowEntityCamera();

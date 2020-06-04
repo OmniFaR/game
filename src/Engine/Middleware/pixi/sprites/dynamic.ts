@@ -23,6 +23,9 @@ Events.on(engine, 'afterUpdate', async () => {
   const bodies = Composite.allBodies(engine.world);
   const updatingBodies = bodies.filter((body) => !body.isSensor && !body.isSleeping && !body.isStatic);
 
+  // TODO: maybe opimize this (Only update visisble objects?)
+  // We can currently render 200 + connected objects on my machine, but i am not sure about the performance on other devices...
+
   try {
     await Promise.all(updatingBodies.map(async (body) => updateSpriteObject(body)));
   } catch (e) { }

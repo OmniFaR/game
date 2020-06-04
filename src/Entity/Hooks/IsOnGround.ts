@@ -1,14 +1,12 @@
 import { Body, Engine, Events } from "matter-js";
-import container from '../../inversify.config';
+import container from '../../Engine/inversify.config';
 
 const engine = container.get(Engine);
 
 function IsOnGround(entity: Body) {
 
-  /**
-   * TODO: This needs some refactoring, we should only set isOnGround = true when the collision is underneath.
-   * TODO: This needs some refactoring, we should also set isOnWall = true when the collision is with a wall.
-   */
+ // TODO: This needs some refactoring, we should only set isOnGround = true when the collision is underneath.
+ // TODO: This needs some refactoring, we should also set isOnWall = true when the collision is with a wall.
 
   (entity as any).isOnGround = false;
 

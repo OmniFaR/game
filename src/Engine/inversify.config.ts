@@ -1,13 +1,9 @@
 import "reflect-metadata";
 import { Container } from 'inversify';
 import getDecorators from 'inversify-inject-decorators';
-import IInput from './Input/IInput';
-import KeyboardInput from './Input/Impl/KeyboardInput';
 
 const container = new Container();
 const { lazyInject: originalLazyInject } = getDecorators(container);
-
-container.bind(IInput).to(KeyboardInput);
 
 /**
  * Fix for webpack.

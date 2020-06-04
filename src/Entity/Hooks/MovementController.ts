@@ -1,9 +1,9 @@
 import { Body, Engine, Events, Vector, Sleeping } from "matter-js";
-import IInput from '../../Input/IInput';
-import container from '../../inversify.config';
+import IInput from '../../Engine/Input/IInput';
+import container from '../../Engine/inversify.config';
 import IsOnGround from "./IsOnGround";
-import GetSprite from '../../Middleware/pixi/Hooks/GetSprite';
-import Animated from '../../Middleware/pixi/Hooks/Animated';
+import GetSprite from '../../Engine/Middleware/pixi/Hooks/GetSprite';
+import Animated from '../../Engine/Middleware/pixi/Hooks/Animated';
 import { AnimatedSprite } from "pixi.js";
 
 const engine = container.get(Engine);
