@@ -9,15 +9,6 @@ let activeCameras: Array<ICamera> = [];
 const engine = container.get(Engine);
 const app = container.get(Application);
 
-
-function multVectors(a: Vector, b: Vector) {
-  return Vector.create(a.x * b.x, a.y * b.y);
-}
-
-function subVectors(a: Vector, b: Vector) {
-  return Vector.create(a.x / b.x, a.y / b.y);
-}
-
 @injectable()
 abstract class ICamera {
 
@@ -49,27 +40,59 @@ abstract class ICamera {
     return this.index === activeCameras.length;
   }
 
-  protected updateCameraPositionAndSize(position: Vector, size: Vector) {
+  protected updateCameraPositionAndSize(position: Vector, size: Vector, offset: Vector) {    
     if (debugRendererMode) {
       const render = container.get(Render);
 
       const windowSize = Vector.create(render.options.width, render.options.height);
-      const finalSize = subVectors(windowSize, size);
+      const finalSize = ICamera.translateCameraSizeToPositionSize(size, windowSize);
       const halfFinalSize = Vector.div(finalSize, 2);
 
+      const offset2 = ICamera.translatePositionSizeToCameraSize(offset, windowSize);
 
-      const finalPosition = Vector.sub(position, halfFinalSize);
+      const finalPosition = Vector.sub(Vector.sub(position, halfFinalSize), Vector.div(offset2, 2));
       render.bounds.min = finalPosition;
-      render.bounds.max = Vector.add(finalPosition, finalSize);
+      render.bounds.max = Vector.add(Vector.add(finalPosition, finalSize), offset2);
     }
 
     app.stage.position.x = app.renderer.width / 2;
     app.stage.position.y = app.renderer.height / 2;
 
-    app.stage.scale.x = size.x;
-    app.stage.scale.y = size.y;
-    app.stage.pivot.x = position.x;
-    app.stage.pivot.y = position.y;
+    const translatedOffset = ICamera.translatePositionSizeToCameraSize(offset, size);
+
+    app.stage.scale.x = size.x - translatedOffset.x; 
+    app.stage.scale.y = size.y - translatedOffset.y;
+    app.stage.pivot.x = position.x + (offset.x / 2);
+    app.stage.pivot.y = position.y + (offset.y / 2);
+  }
+
+  private renderCameraBounds(app: Application) {
+    const graphics = PIXI.Sprite.from(PIXI.Texture.WHITE);
+
+    const bounds = this.getBounds();
+
+    graphics.x = bounds.min.x;
+    graphics.y = bounds.min.y;
+
+    graphics.width = bounds.max.x - bounds.min.x;
+    graphics.height = bounds.max.y - bounds.min.y;
+
+    graphics.alpha = .1;
+
+    graphics.tint = 0xFF0000;
+
+    app.stage.addChild(graphics);
+    setTimeout(() => {
+      app.stage.removeChild(graphics);
+    }, 10);
+  }
+
+  protected static translatePositionSizeToCameraSize(vector: Vector, size: Vector) {
+    return Vector.create(size.y * vector.x, size.x * vector.y);
+  }
+
+  protected static translateCameraSizeToPositionSize(vector: Vector, size: Vector) {
+    return Vector.create(size.x / vector.x, size.y / vector.y);
   }
 
   /**

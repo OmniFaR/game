@@ -12,7 +12,7 @@ type FollowEntityCameraOptions = {
 
 const defaultEntityCameraOptions: FollowEntityCameraOptions = {
   minimalScale: 0.8, // scale in %
-  distanceOffset: .002 // offset in units (when the camera starts scaling)
+  distanceOffset: 0.1 // offset in units (when the camera starts scaling)
 }
 
 type InternalBounds = {
@@ -55,23 +55,6 @@ class FollowEntityCamera extends ICamera {
 
     this.bounds = this.calculateBounds(bodies);
 
-    const graphics = PIXI.Sprite.from(PIXI.Texture.WHITE);
-
-    graphics.x = this.bounds.min.x;
-    graphics.y = this.bounds.min.y;
-
-    graphics.width = this.bounds.max.x - this.bounds.min.x;
-    graphics.height = this.bounds.max.y - this.bounds.min.y;
-
-    graphics.alpha = .1;
-
-    graphics.tint = 0xFF0000;
-
-    app.stage.addChild(graphics);
-    setTimeout(() => {
-      app.stage.removeChild(graphics);
-    }, 10);
-
     if (usedBodyIds.length === 2) {
       console.log(this.bounds, bodies);
     }
@@ -91,13 +74,9 @@ class FollowEntityCamera extends ICamera {
       const distance = Vector.create(this.options.distanceOffset, this.options.distanceOffset);
       const halfDistance = Vector.div(distance, 2);
 
-      super.updateCameraPositionAndSize(
-        cameraPosition,
-        cameraSize);
-        //Vector.sub(cameraPosition, halfDistance), 
-        //Vector.add(cameraSize, distance));
+      super.updateCameraPositionAndSize( cameraPosition, cameraSize, halfDistance );
     } else {
-      super.updateCameraPositionAndSize(cameraPosition, cameraSize);
+      super.updateCameraPositionAndSize(cameraPosition, cameraSize, Vector.create(0, 0));
     }
   }
 
@@ -111,8 +90,6 @@ class FollowEntityCamera extends ICamera {
     const halfFinalSize = Vector.div(elementSize, 2);
 
     return Vector.add(min, halfFinalSize);
-
-    //    return Vector.create(min.x - (size.x) * finalSize.x, min.y - (size.y) * finalSize.y);
   }
 
   private getCameraSize(app: Application, size: Vector): Vector {
