@@ -19,7 +19,12 @@ if (debugRendererMode) {
       showAxes: true,
       showIds: true,
       showDebug: true,
-      wireframes: true
+      showCollisions: true,
+      showBroadphase: true,
+      showSeparations: true,
+      showPositions: true,
+      showAngleIndicator: true,
+      showShadows: true
     } as any
   });
 
