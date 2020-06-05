@@ -14,6 +14,10 @@ function multVectors(a: Vector, b: Vector) {
   return Vector.create(a.x * b.x, a.y * b.y);
 }
 
+function subVectors(a: Vector, b: Vector) {
+  return Vector.create(a.x / b.x, a.y / b.y);
+}
+
 @injectable()
 abstract class ICamera {
 
@@ -49,18 +53,23 @@ abstract class ICamera {
     if (debugRendererMode) {
       const render = container.get(Render);
 
-      const finalSize = multVectors(Vector.create(render.options.width, render.options.height), size);
+      const windowSize = Vector.create(render.options.width, render.options.height);
+      const finalSize = subVectors(windowSize, size);
+      const halfFinalSize = Vector.div(finalSize, 2);
 
-      const centerPosition = Vector.sub(position, Vector.div(finalSize, 2));
-      render.bounds.min = centerPosition;
-      render.bounds.max = Vector.add(position, finalSize);
+
+      const finalPosition = Vector.sub(position, halfFinalSize);
+      render.bounds.min = finalPosition;
+      render.bounds.max = Vector.add(finalPosition, finalSize);
     }
 
-    app.stage.position.x = app.renderer.width/2;
-    app.stage.position.y = app.renderer.height/2;
+    app.stage.position.x = app.renderer.width / 2;
+    app.stage.position.y = app.renderer.height / 2;
 
-    app.stage.scale.copyFrom(size as any);
-    app.stage.pivot.copyFrom(position as any);
+    app.stage.scale.x = size.x;
+    app.stage.scale.y = size.y;
+    app.stage.pivot.x = position.x;
+    app.stage.pivot.y = position.y;
   }
 
   /**
