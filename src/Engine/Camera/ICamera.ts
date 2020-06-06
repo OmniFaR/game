@@ -1,6 +1,7 @@
 import { injectable } from "inversify";
 import container from '../inversify.config';
 import { Events, Engine, Bounds, Vector, Render } from "matter-js";
+import * as PIXI from "pixi.js";
 import { Application } from "pixi.js";
 import { debugRendererMode } from "../config";
 
@@ -53,6 +54,8 @@ abstract class ICamera {
       const finalPosition = Vector.sub(Vector.sub(position, halfFinalSize), Vector.div(offset2, 2));
       render.bounds.min = finalPosition;
       render.bounds.max = Vector.add(Vector.add(finalPosition, finalSize), offset2);
+
+      this.renderCameraBounds(app);
     }
 
     app.stage.position.x = app.renderer.width / 2;

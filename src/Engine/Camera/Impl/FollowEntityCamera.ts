@@ -48,22 +48,19 @@ class FollowEntityCamera extends ICamera {
     const usedBodyIds = boundEntries.filter(([,isActive]) => isActive).map(([id]) => id);
 
     if (usedBodyIds.length === 0) {
-      
+      return;
     }
 
     const bodies = usedBodyIds.map((id) => Composite.get(engine.world, id, 'body')) as Array<Body>;
 
-    this.bounds = this.calculateBounds(bodies);
+    const elementBounds = Bounds.create(bodies.reduce((allVertices, { vertices }) => [ ...allVertices, ...vertices ], []));
 
-    if (usedBodyIds.length === 2) {
-      console.log(this.bounds, bodies);
-    }
+    this.bounds = elementBounds;
 
-    const elementSize = Vector.sub(this.bounds.max, this.bounds.min);
+    const elementSize = Vector.sub(elementBounds.max, elementBounds.min);
     const cameraSize = this.getCameraSize(app, elementSize);
-    this.bounds.max = Vector.add(this.bounds.min, cameraSize);
 
-    const cameraPosition = this.getCameraPosition(app, elementSize);
+    const cameraPosition = this.getCameraPosition(app, elementSize, elementBounds);
 
     this.updateCameraPositionAndSize(cameraPosition, cameraSize);
   }
@@ -80,12 +77,8 @@ class FollowEntityCamera extends ICamera {
     }
   }
 
-  private calculateBounds(bodies: Body[]): InternalBounds {
-    return Bounds.create(bodies.reduce((allVertices, { vertices }) => [ ...allVertices, ...vertices ], []));
-  }
-
-  private getCameraPosition(app: Application, elementSize: Vector) {
-    const { min } = this.bounds;
+  private getCameraPosition(app: Application, elementSize: Vector, elementBounds: Bounds) {
+    const { min } = elementBounds;
 
     const halfFinalSize = Vector.div(elementSize, 2);
 
