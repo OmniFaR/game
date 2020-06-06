@@ -106,6 +106,15 @@ abstract class ICamera {
 
 container.bind(ICamera).toDynamicValue(() => {
   if (activeCameras.length > 0) {
+    for (let index = activeCameras.length - 1; index > 0; index--) {
+      const camera = activeCameras[index];
+
+      if (!camera || !camera.isActive()) {
+        continue;
+      }
+
+      return camera;
+    }
     return activeCameras[activeCameras.length - 1];
   }
 });

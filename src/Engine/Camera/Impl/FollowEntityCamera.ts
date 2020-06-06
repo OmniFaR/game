@@ -48,7 +48,7 @@ class FollowEntityCamera extends ICamera {
     const usedBodyIds = boundEntries.filter(([,isActive]) => isActive).map(([id]) => id);
 
     if (usedBodyIds.length === 0) {
-      return;
+      
     }
 
     const bodies = usedBodyIds.map((id) => Composite.get(engine.world, id, 'body')) as Array<Body>;
@@ -105,6 +105,10 @@ class FollowEntityCamera extends ICamera {
 
   getBounds(): Bounds {
     return this.bounds;
+  }
+
+  isActive() {
+    return super.isActive() && Object.values(this.bodyIds).find((value) => value);
   }
 }
 
