@@ -68,7 +68,7 @@ class FollowEntityCamera extends ICamera {
     this.updateCameraPositionAndSize(cameraPosition, cameraSize);
   }
 
-  private updateCameraPositionAndSize(cameraPosition: Vector, cameraSize: Vector) {
+  protected updateCameraPositionAndSize(cameraPosition: Vector, cameraSize: Vector) {
     if (this.options.distanceOffset > 0) {
 
       const distance = Vector.create(this.options.distanceOffset, this.options.distanceOffset);
@@ -106,7 +106,6 @@ class FollowEntityCamera extends ICamera {
   getBounds(): Bounds {
     return this.bounds;
   }
-
 }
 
 export default FollowEntityCamera;

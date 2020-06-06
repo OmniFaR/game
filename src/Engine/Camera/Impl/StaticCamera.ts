@@ -41,5 +41,6 @@ class StaticCamera extends ICamera {
   public getBounds(): Bounds {
     return this.bounds;
   }
-
 }
+
+export default StaticCamera;
