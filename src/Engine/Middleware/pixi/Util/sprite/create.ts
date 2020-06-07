@@ -2,6 +2,7 @@ import getColor from "../getColor/getColor";
 import { Body, Vector } from 'matter-js';
 import { EngineBodyPixi, EngineBody } from "../../../../types";
 import * as PIXI from 'pixi.js';
+import update from "./update";
 
 function contruct(body: Body): EngineBodyPixi {
   if (body.render && (body.render as any).texture) {
@@ -23,7 +24,6 @@ function contruct(body: Body): EngineBodyPixi {
     };
   }
 }
-
 function create(body: Body): EngineBody {
 
   const sprite = (body as EngineBody).pixi || contruct(body);
@@ -36,6 +36,8 @@ function create(body: Body): EngineBody {
   sprite.sprite.anchor.set(0.5);
 
   (body as EngineBody).pixi = sprite;
+
+  update(body);
 
   return body as EngineBody;
 }

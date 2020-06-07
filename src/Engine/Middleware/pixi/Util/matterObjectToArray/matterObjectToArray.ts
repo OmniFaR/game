@@ -6,6 +6,10 @@ function matterObjectToArray(object: any): Body[] {
     return object;
   }
 
+  if (typeof object === "object" && object.type === "body") {
+    return [ object ];
+  }
+
   return Composite.allBodies(object);
 }
 

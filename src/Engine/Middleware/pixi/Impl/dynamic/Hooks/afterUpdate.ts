@@ -1,4 +1,4 @@
-import updateSprite from "../Util/sprite/update";
+import updateSprite from "../../../Util/sprite/update";
 import { Events, Engine, Body, Query } from 'matter-js';
 import container from "../../../../../inversify.config";
 import ICamera from "../../../../../Camera/ICamera";
@@ -42,4 +42,4 @@ const onAfterUpdate = singleRun(async () => {
   }
 })
 
-Events.on(engine.world, 'afterUpdate', onAfterUpdate);
+Events.on(engine, 'afterUpdate', onAfterUpdate);

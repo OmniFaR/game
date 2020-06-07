@@ -4,7 +4,7 @@ import IInput from '../../../Engine/Input/IInput';
 import container from "../../../Engine/inversify.config";
 import { loadDougAssets } from "../../../Assets";
 import { AnimatedSprite } from "pixi.js";
-import GetSprite from "../../../Engine/Middleware/pixi/Hooks/GetSprite";
+import GetSprite from "../../../Engine/Middleware/pixi/sprites/GetSprite";
 import FollowEntityCamera from '../../../Engine/Camera/Impl/FollowEntityCamera';
 
 const engine = container.get(Engine);

@@ -2,7 +2,7 @@ import Matter from 'matter-js';
 import PIXI from 'pixi.js';
 
 export type EngineBodyPixi = {
-  sprite: PIXI.Sprite;
+  sprite: PIXI.Sprite|PIXI.AnimatedSprite;
   delete: boolean;
 };
 

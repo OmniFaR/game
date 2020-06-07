@@ -17,6 +17,7 @@ export function add(bodies: Body[]) {
     const engineBody = get(body);
     access(body).add(engineBody, engineBody.pixi.sprite, app);
 
+    console.log(engineBody.pixi.sprite);
     app.stage.addChild(engineBody.pixi.sprite);
   });
 }
@@ -32,35 +33,5 @@ export function remove(bodies: Body[]) {
   })
 }
 
-/**
- * import * as Static from './static';
-import * as Dynamic from './dynamic';
-import container from '../../../inversify.config';
-import { Application } from 'pixi.js';
-import SpriteObject from '../Util/SpriteObject/SpriteObject';
-import { destroySpriteObject } from '../Util/SpriteObject/SpriteObject';
-
-const app = container.get(Application);
-
-export function add(body: Matter.Body) {
-
-  const sprite = SpriteObject(body);
-
-  if (sprite) {
-    (body.isStatic ? Static.add : Dynamic.add)(body, sprite[1]);
-    (body as any).pixi = sprite;
-    app.stage.addChild(sprite[1]);
-  }
-};
-
-export function remove(body: Matter.Body) {
-  const sprite = SpriteObject(body);
-
-  if (sprite) {
-    (body.isStatic ? Static.remove : Dynamic.remove)(body, sprite[1]);
-    (body as any).pixi = undefined;
-    app.stage.removeChild(sprite[1]);
-    destroySpriteObject(body);
-  }
-}
- */
+import './Hooks/afterAdd';
+import './Hooks/beforeRemove';

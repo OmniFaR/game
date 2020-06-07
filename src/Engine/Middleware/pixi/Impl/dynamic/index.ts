@@ -9,3 +9,5 @@ export function add(body: Body, sprite: Sprite, app: Application) {
 export function remove(body: Body, sprite: Sprite, app: Application) {
 
 }
+
+import './Hooks/afterUpdate';

@@ -1,5 +1,5 @@
 import { Body } from "matter-js";
-import SpriteObject from '../sprites/SpriteObject';
+import SpriteObject from '../Util/sprite/update';
 
 function GetSprite(body: Body): PIXI.Sprite|PIXI.AnimatedSprite {
   return (body as any).pixi || SpriteObject(body)[1];

@@ -2,9 +2,10 @@ import { Body, Engine, Events, Vector, Sleeping } from "matter-js";
 import IInput from '../../Engine/Input/IInput';
 import container from '../../Engine/inversify.config';
 import IsOnGround from "./IsOnGround";
-import GetSprite from '../../Engine/Middleware/pixi/Hooks/GetSprite';
-import Animated from '../../Engine/Middleware/pixi/Hooks/Animated';
+import GetSprite from '../../Engine/Middleware/pixi/sprites/GetSprite';
+import Animated from '../../Engine/Middleware/pixi/sprites/Animated';
 import { AnimatedSprite } from "pixi.js";
+import get from "../../Engine/Middleware/pixi/Util/sprite/get";
 
 const engine = container.get(Engine);
 
@@ -51,7 +52,8 @@ function MovementController(entity: Body, input: IInput, options: Partial<Moveme
 
   const removeIsOnGround = IsOnGround(entity);
 
-  const sprite = GetSprite(entity) as AnimatedSprite;
+  const engineBody = get(entity);
+  const sprite = engineBody.pixi.sprite as PIXI.AnimatedSprite;
 
   const [setActiveAnimation] = Animated(sprite, {
     'idle': idleAnimation,
