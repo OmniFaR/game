@@ -3,7 +3,6 @@ import MovementController, { defaultOptions as movementControllerDefaultOptions 
 import IInput from '../../../Engine/Input/IInput';
 import container from "../../../Engine/inversify.config";
 import { loadDougAssets } from "../../../Assets";
-import { AnimatedSprite } from "pixi.js";
 import GetSprite from "../../../Engine/Middleware/pixi/sprites/GetSprite";
 import FollowEntityCamera from '../../../Engine/Camera/Impl/FollowEntityCamera';
 
@@ -70,11 +69,11 @@ async function Player(input: IInput, options: Partial<PlayerOptions> = {}): Prom
   const playerWidth = (player.bounds.max.x - player.bounds.min.x);
   const halfPlayerWidth = playerWidth / 2;
 
-  const emitter = dougAssets.player_land_on_ground_particle_factory(GetSprite(player));
-  emitter.autoUpdate = true;
-  emitter.addAtBack = false;
-  emitter.emit = false;
-  emitter.spawnRect.width = playerWidth;
+  // const emitter = dougAssets.player_land_on_ground_particle_factory(GetSprite(player));
+  // emitter.autoUpdate = true;
+  // emitter.addAtBack = false;
+  // emitter.emit = false;
+  // emitter.spawnRect.width = playerWidth;
 
   (player as any).dontTransferAngle = true;
 
@@ -92,11 +91,11 @@ async function Player(input: IInput, options: Partial<PlayerOptions> = {}): Prom
     walkAnimation: dougAssets.walk,
     idleAnimation: dougAssets.idle,
     onLand: (speed: number) => {
-      emitter.updateOwnerPos(player.position.x, player.position.y + halfPlayerHeight);
-      emitter.frequency = 1 / (speed * 60);
+      //emitter.updateOwnerPos(player.position.x, player.position.y + halfPlayerHeight);
+      //emitter.frequency = 1 / (speed * 60);
       setTimeout(() => {
-        emitter.emit = true;
-        setTimeout(() => emitter.emit = false, 20);
+        //emitter.emit = true;
+        //setTimeout(() => emitter.emit = false, 20);
       }, 20);
     }
   });
@@ -107,7 +106,7 @@ async function Player(input: IInput, options: Partial<PlayerOptions> = {}): Prom
     container.get(FollowEntityCamera).removeBody(player);
     removePlayerMovement();
 
-    emitter.destroy();
+    // emitter.destroy();
     dougAssets.damage.destroy();
     dougAssets.idle.destroy();
     dougAssets.jump.destroy();

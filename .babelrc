@@ -15,7 +15,7 @@
     "plugins": [
       "babel-plugin-transform-typescript-metadata",
       ["@babel/proposal-decorators", { "legacy": true }],
-      "@babel/proposal-class-properties",
+      ["@babel/proposal-class-properties", { "loose": true }],
       "@babel/proposal-object-rest-spread"
     ]
   }

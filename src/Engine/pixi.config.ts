@@ -7,11 +7,12 @@ const { Application, Container, Sprite, lights, display } = PIXI;
 
 import container from "./inversify.config";
 
-const scene = document.getElementById("scene");
+const scene = document.getElementById("scene") as HTMLCanvasElement;
 
 const app = new Application({
   transparent: false,
-  resizeTo: scene,
+  autoResize: true,
+  view: scene,
   backgroundColor: 0x000000,
 });
 
@@ -27,4 +28,4 @@ stage.addChild(new display.Layer(lightGroup));
 
 container.bind(Application).toConstantValue(app);
 
-scene.appendChild(app.view);
+// scene.appendChild(app.view);

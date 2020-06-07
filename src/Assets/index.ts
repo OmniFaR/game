@@ -1,12 +1,9 @@
-// import { AnimatedSprite } from "pixi.js";
-import * as Particles from 'pixi-particles';
 import container from "../Engine/inversify.config";
-import { Vector } from "matter-js";
-import { AnimatedSprite } from 'pixi.js';
+import * as PIXI from 'pixi.js';
 
 const app = container.get(PIXI.Application);
 
-function makeAnimation(name: string, framesCount: number, resources?: PIXI.LoaderResource) {
+function makeAnimation(name: string, framesCount: number, resources?: PIXI.loaders.Resource) {
 
   let frames = [];
 
@@ -18,35 +15,28 @@ function makeAnimation(name: string, framesCount: number, resources?: PIXI.Loade
   return new PIXI.extras.AnimatedSprite(frames);
 }
 
-function loadSpriteFile(name: string, file: string): Promise<Partial<Record<string, PIXI.LoaderResource>>> {
+function loadSpriteFile(name: string, file: string): Promise<Partial<Record<string, PIXI.loaders.Resource>>> {
   return new Promise((resolve, reject) => {
     app.loader.add(name, file).load((loader, resources) => resolve(resources));
   });  
 }
 
 type DougAssets = {
-  idle: PIXI.AnimatedSprite;
-  damage: PIXI.AnimatedSprite;
-  jump: PIXI.AnimatedSprite;
-  walk: PIXI.AnimatedSprite;
-  player_land_on_ground_particle_factory: (container: PIXI.Container) => Particles.Emitter;
+  idle: PIXI.extras.AnimatedSprite;
+  damage: PIXI.extras.AnimatedSprite;
+  jump: PIXI.extras.AnimatedSprite;
+  walk: PIXI.extras.AnimatedSprite;
 }
 
 const loadDougAssetsPromise = new Promise<DougAssets>(async (resolve) => {
   const { player_doug_base } = await loadSpriteFile('player_doug_base', 'assets/_ressources/Player/Doug/sprite.json');
-  const { player_land_on_ground_particle_json  } = await loadSpriteFile('player_land_on_ground_particle_json', 'assets/_ressources/Player/landOnGround.json');
 
   const idle = makeAnimation('idle', 3, player_doug_base);
   const damage = makeAnimation('damage', 3, player_doug_base);
   const jump = makeAnimation('jump', 3, player_doug_base);
   const walk = makeAnimation('walking', 5, player_doug_base);
-  const player_land_on_ground_particle_factory = (container: PIXI.Container) => new Particles.Emitter(
-    app.stage, 
-    [PIXI.Texture.from('assets/_ressources/Player/landOnGround.png')], 
-    player_land_on_ground_particle_json.data
-  );
 
-  resolve({ idle, damage, jump, walk, player_land_on_ground_particle_factory });
+  resolve({ idle, damage, jump, walk });
 });
 
 export async function loadDougAssets() {
