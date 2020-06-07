@@ -30,11 +30,11 @@ function toHex(value: number) {
   return val;
 }
 
-function color(color: string): number {
+function getColor(color: string): number {
   const [r, g, b] = colorToRGBA(color);
 
   const hex = '0x' + [r, g, b].map((x) => toHex(x)).join('');
   return parseInt(hex);
 }
 
-export default color;
+export default getColor;

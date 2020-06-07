@@ -11,9 +11,14 @@ This game will be a dungeon-crawler-brawler game
 
 ## Used libraries
 
- matter-js (Game-Engine) [link to docs](https://brm.io/matter-js)
- inversify (Dependency Injection) [link to docs](https://github.com/inversify/InversifyJS#the-inversifyjs-features-and-api)
- typescript (Language that gets compiled/transpiled to javascript) [link to docs](https://www.typescriptlang.org/) 
+- matter-js (Game-Engine) [link to docs](https://brm.io/matter-js)
+- pixi-js (Rendering-Engine) [link to docs](https://pixijs.download/dev/docs/index.html)
+  - TODO: (Lightning engine(pixi-light)) [link to docs](https://pixijs.io/pixi-lights/docs/index.html)
+  - TODO: (Layering engine(pixi-layers)) [link to docs](https://github.com/pixijs/pixi-layers)
+  - TODO: (Particle engine(Proton)) [link to docs](https://github.com/drawcall/Proton)
+  - TODO: Remove old particle engine.
+- inversify (Dependency Injection) [link to docs](https://github.com/inversify/InversifyJS#the-inversifyjs-features-and-api)
+- typescript (Language that gets compiled/transpiled to javascript) [link to docs](https://www.typescriptlang.org/)
 
 ## Used ressources
 
