@@ -47,7 +47,7 @@ async function Player(input: IInput, options: Partial<PlayerOptions> = {}): Prom
   dougAssets.idle.animationSpeed = 0.1;
   dougAssets.jump.animationSpeed = 0.3;
 
-  const sprite = new AnimatedSprite(dougAssets.idle.textures);
+  const sprite = new PIXI.extras.AnimatedSprite(dougAssets.idle.textures);
   sprite.scale.y *= -1;
   sprite.animationSpeed = 0.1;
   sprite.play();

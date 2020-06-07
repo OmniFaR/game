@@ -11,11 +11,21 @@ const engine = container.get(Engine);
 function getBodies(engine: Engine) {
   const camera = container.get(ICamera);
 
+  const bodies = engine.world.bodies;
+
+  return bodies;
+
   if (!camera) {
-    return engine.world.bodies;
+    return bodies;
   }
 
-  return Query.region(engine.world.bodies, camera.getBounds());
+  const bounds = camera.getBounds();
+
+  if (!bounds) {
+    return bodies;
+  }
+
+  return Query.region(bodies, bounds);
 }
 
 let previousBodies: Array<Body>|undefined = undefined;

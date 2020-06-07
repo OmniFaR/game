@@ -6,9 +6,7 @@ import container from '../../inversify.config';
 import { Application } from 'pixi.js';
 import destroy from './Util/sprite/destroy';
 
-function access(body: Body) {
-  return body.isStatic ? Static : Dynamic;
-}
+const access = (body: Body) => body.isStatic ? Static : Dynamic;
 
 const app = container.get(Application);
 
@@ -17,7 +15,6 @@ export function add(bodies: Body[]) {
     const engineBody = get(body);
     access(body).add(engineBody, engineBody.pixi.sprite, app);
 
-    console.log(engineBody.pixi.sprite);
     app.stage.addChild(engineBody.pixi.sprite);
   });
 }

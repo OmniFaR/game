@@ -1,7 +1,8 @@
-import * as PIXI from "pixi.js";
+// import { AnimatedSprite } from "pixi.js";
 import * as Particles from 'pixi-particles';
 import container from "../Engine/inversify.config";
 import { Vector } from "matter-js";
+import { AnimatedSprite } from 'pixi.js';
 
 const app = container.get(PIXI.Application);
 
@@ -14,7 +15,7 @@ function makeAnimation(name: string, framesCount: number, resources?: PIXI.Loade
     frames.push(resources ? resources.textures[key] : PIXI.Texture.from(key));
   }
 
-  return new PIXI.AnimatedSprite(frames);
+  return new PIXI.extras.AnimatedSprite(frames);
 }
 
 function loadSpriteFile(name: string, file: string): Promise<Partial<Record<string, PIXI.LoaderResource>>> {
